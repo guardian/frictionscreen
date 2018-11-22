@@ -7,7 +7,7 @@ import android.widget.Toast
 import guardian.com.frictionscreen.FrictionScreenManager
 import kotlinx.android.synthetic.main.activity_article.*
 
-class ArticleActivity: AppCompatActivity() {
+class ArticleActivity : AppCompatActivity() {
 
     private lateinit var frictionScreenManager: FrictionScreenManager
     private val articleUrl = "https://www.theguardian.com/education/2018/nov/22/3000-pounds-for-a-school-trip-you-must-be-joking"
@@ -21,14 +21,13 @@ class ArticleActivity: AppCompatActivity() {
         // This can move to application class to avoid initializing multiple times
         val config = FrictionScreenManager.Config(3, 1, true, true)
         frictionScreenManager = FrictionScreenManager(this, config)
-
         frictionScreenManager.recordArticleRead("article-" + System.currentTimeMillis())
     }
 
     override fun onResume() {
         super.onResume()
 
-        if(frictionScreenManager.shouldShowSubsScreen()) {
+        if (frictionScreenManager.shouldShowSubsScreen()) {
             showPremiumDialog()
             frictionScreenManager.setSubscriptionScreenDisplayed()
         }
@@ -39,7 +38,7 @@ class ArticleActivity: AppCompatActivity() {
                 .setTitle("Premium Purchase")
                 .setView(R.layout.dialog_premium)
                 .setPositiveButton("Buy") { _, _ -> Toast.makeText(this@ArticleActivity, getString(R.string.premium_purchase), Toast.LENGTH_LONG).show() }
-                .setNegativeButton("Close") { _, _ ->}
+                .setNegativeButton("Close") { _, _ -> }
 
         builder.create().show()
     }
