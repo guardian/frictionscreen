@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Demo</string>
+    <string name="premium_message">Read the Guardian ad-free on all your devices, plus get all the benefits of the Premium App and Daily Edition iPad app</string>
+    <string name="premium_purchase">Launch in-ap purchase flow (or whatever equivalent)</string>
+    <string name="btn_read_article">Read article</string>
+    <string name="friction_hints">Open the article 3 times to see the friction screen</string>
+</resources>
