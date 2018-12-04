@@ -9,8 +9,11 @@ val config = FrictionScreenManager.Config(xContentRead, minDays, isEnables, requ
 frictionScreenManager = FrictionScreenManager(activity, config)
 ```
 **xContentRead**: number of minimum contents/articles users need to consume (e.g. 10)
+
 **minDays**: minimum days over which users need to consume the content (e.g. 7)
+
 **isEnables**: set to `false` if need to be (e.g. if you want to not trigger it until some other conditions are meet)
+
 **requireConnectivity**: set to `true` if app require connectivity when it triggers
 
 When user consume a piece of content call this method, preferebly on onCreate of activity or similar for fragment:
