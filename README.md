@@ -1,28 +1,33 @@
-# frictionscreen
-For a content-based android app where it requires to show some kind of friction screen when it meets certain conditions then this small library can be very handy. For example, a free news app would like to show a subscription screen to nudge users to buy subscription after reading 10 articles in the last 7 days then you can just set this two pieces of information in the config and the library will keep monitor user's reading activity and trigger when the subscription screen need to be shown.
+# Friction Screen
+A library for content-based apps that require a friction mechanism. Simplifies the process of managing conditions for displaying a friction screen.
+
+For example, a free news app might like to show a subscription screen to nudge users into buying subscription after reading 10 articles in the last 7 days.
+
 
 ## Configuration
-To configure the FrictionScreenManager, preferebly only once in your application class: 
+Configure the `FrictionScreenManager`, preferably only once in your application:
 
+```kotlin
+val config = FrictionScreenManager.Config(articleReadThreshold, minDaysThreshold, isEnabled, showFrictionScreenWhileOnline)
+frictionScreenManager = FrictionScreenManager(context, config)
 ```
-val config = FrictionScreenManager.Config(xContentRead, minDays, isEnables, requireConnectivity)
-frictionScreenManager = FrictionScreenManager(activity, config)
-```
-* xContentRead: number of minimum contents/articles users need to consume (e.g. 10)
-* minDays: minimum days over which users need to consume the content (e.g. 7)
-* isEnables: set to `false` if need to be (e.g. if you want to not trigger it until some other conditions are meet)
-* requireConnectivity: set to `true` if app require connectivity when it triggers
+
+* `articleReadThreshold`: number of minimum content/articles users need to consume (e.g. 10)
+* `minDaysThreshold`: minimum days over which users need to consume the content/articles (e.g. 7)
+* `isEnabled`: set to `false` if you want to not trigger it until conditions are met
+* `showFrictionScreenWhileOnline`: set to `true` if app requires connectivity when it triggers
 
 
-When user consume a piece of content call this method, preferebly on onCreate of activity or similar for fragment:
+When user consume a piece of content call this method, preferably in the `onCreate` method of an `Activity` or a `Fragment`:
+
+```kotlin
+frictionScreenManager.recordArticleRead(articleId)
 ```
-frictionScreenManager.recordArticleRead(uniqueContentId)
-```
-* uniqueContentId: set unique id (e.g. `article- + System.currentTimeMillis()`)
+* `articleId`: a unique id for an article (e.g. `article- + System.currentTimeMillis()`)
 
 
 To show the friction screen (subs/premium purchase screen) check and show the screen, preferebly do it in `onResume`:
-```
+```kotlin
 override fun onResume() {
     super.onResume()
     if(frictionScreenManager.shouldShowSubsScreen()) {
@@ -32,4 +37,4 @@ override fun onResume() {
 }
 ```
 
-Thats it, user will not see the screen again until `minDays` period is over.
+Thats it, a user will not see the screen again until `minDaysThreshold` period is over.
