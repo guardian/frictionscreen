@@ -5,7 +5,6 @@ import android.net.ConnectivityManager
 import guardian.com.frictionscreen.storage.FrictionDataRepository
 import guardian.com.frictionscreen.storage.SharedPreferencesDataRepository
 
-
 class FrictionScreenManager(
         private val context: Context,
         private val config: Config,
@@ -13,10 +12,7 @@ class FrictionScreenManager(
 ) {
 
     private val recorder: FrictionScreenRecorder by lazy {
-        FrictionScreenRecorder.Builder()
-                .setStorage(dataRepository)
-                .setMinArticleReadThreshold(config.articleReadThreshold)
-                .setMinDaysThreshold(config.minDaysThreshold).build()
+        FrictionScreenRecorder(dataRepository, config.articleReadThreshold, config.minDaysThreshold)
     }
 
     fun recordArticleRead(articleId: String) {
