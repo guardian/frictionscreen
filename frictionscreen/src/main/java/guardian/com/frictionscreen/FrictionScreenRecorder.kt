@@ -22,15 +22,18 @@ import java.util.concurrent.TimeUnit
 class FrictionScreenRecorder(
         private val storageRepository: FrictionDataRepository,
         private val articleReadThreshold: Int,
-        private val minDaysThreshold: Int
+        private val minDaysThreshold: Int,
+        var comparisonDate: Date = Date()
 ) {
 
-    private val today = Date()
-    private var articleEntries: MutableMap<String, Date>
-    private val mapper: ObjectMapper = ObjectMapper().disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+    private val mapper: ObjectMapper by lazy {
+        ObjectMapper().disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+    }
+
+    var articleEntries: MutableMap<String, Date>
 
     private val thresholdDaysAgo: Date
-        get() = today.addDays(-minDaysThreshold)
+        get() = comparisonDate.addDays(-minDaysThreshold)
 
     init {
         articleEntries = convertToMap(storageRepository.readEntries())
@@ -41,7 +44,7 @@ class FrictionScreenRecorder(
             return
         }
 
-        articleEntries[articleId] = today
+        articleEntries[articleId] = comparisonDate
         articleEntries = trimEntries(articleEntries)
         storageRepository.writeEntries(flattenData(articleEntries))
     }
@@ -74,7 +77,7 @@ class FrictionScreenRecorder(
         val lastShownDate = storageRepository.getDateOfLastFrictionScreenView()
                 ?: return true // no stored date means user hasn't seen the subs screen at all
 
-        val diff = getDatesDiffInDays(today, lastShownDate)
+        val diff = getDatesDiffInDays(comparisonDate, lastShownDate)
         return diff >= minDaysThreshold
     }
 
