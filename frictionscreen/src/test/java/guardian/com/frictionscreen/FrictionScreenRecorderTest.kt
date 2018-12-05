@@ -3,6 +3,8 @@ package guardian.com.frictionscreen
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.verify
 import com.nhaarman.mockito_kotlin.whenever
+import guardian.com.frictionscreen.extensions.addDays
+import guardian.com.frictionscreen.storage.FrictionDataRepository
 import junit.framework.Assert.*
 import org.junit.Test
 import java.util.*
@@ -49,7 +51,7 @@ class FrictionScreenRecorderTest {
 
     @Test
     fun `Test logic is correct for not showing more than once within threshold period`() {
-        val mockCallback: FrictionDataStorage = mock()
+        val mockCallback: FrictionDataRepository = mock()
         val recorder = FrictionScreenRecorder(mockCallback, 3, 7)
 
         recorder.recordArticleRead("article-1")
@@ -77,17 +79,15 @@ class FrictionScreenRecorderTest {
         assertFalse(recorder.shouldShowFrictionScreen())
     }
 
-
     @Test
     fun `Test logic is correct for keeping record of only within the threshold periods`() {
-        val mockCallback: FrictionDataStorage = mock()
-        val recorder = FrictionScreenRecorder(mockCallback, 3, 3)
+        val mockRepository: FrictionDataRepository = mock()
+        val recorder = FrictionScreenRecorder(mockRepository, 3, 3)
 
         recorder.recordArticleRead("article-1")
         recorder.recordArticleRead("article-2")
         recorder.recordArticleRead("article-3")
-
-        recorder.today = getAdjustedDate(5) // 5 days ahead in future
+        recorder.comparisonDate = getAdjustedDate(5) // 5 days ahead in future
         recorder.recordArticleRead("article-4")
         recorder.recordArticleRead("article-5")
         assertFalse(recorder.shouldShowFrictionScreen())
@@ -99,24 +99,25 @@ class FrictionScreenRecorderTest {
 
     @Test
     fun `Test friction test callbacks get called`() {
-        val mockCallback: FrictionDataStorage = mock()
-        val recorder = FrictionScreenRecorder(mockCallback,1,2)
+        val mockRepository: FrictionDataRepository = mock()
+        val recorder = FrictionScreenRecorder(mockRepository, 1, 2)
 
         recorder.recordArticleRead("article-1")
-        verify(mockCallback).writeEntries(recorder.flattenData(recorder.articleEntries))
+        verify(mockRepository).writeEntries(recorder.flattenData(recorder.articleEntries))
 
         recorder.markAsSubsScreenDisplayed()
-        verify(mockCallback).setDateOfLastFrictionScreenView()
+        verify(mockRepository).setDateOfLastFrictionScreenView()
     }
 
     private fun createRecorder(lastSubsScreenViewDate: Date? = null
                                , minArticleRead: Int = 3, minDaysThreshold: Int = 7): FrictionScreenRecorder {
-        val mockCallback: FrictionDataStorage = mock()
-        whenever(mockCallback.getDateOfLastFrictionScreenView()).thenReturn(lastSubsScreenViewDate)
-        return FrictionScreenRecorder(mockCallback, minArticleRead, minDaysThreshold)
+        val mockRepository: FrictionDataRepository = mock()
+        whenever(mockRepository.getDateOfLastFrictionScreenView()).thenReturn(lastSubsScreenViewDate)
+        return FrictionScreenRecorder(mockRepository, minArticleRead, minDaysThreshold)
     }
 
     private fun getAdjustedDate(dayAdjustment: Int): Date {
         return Date().addDays(dayAdjustment)
     }
+
 }
