@@ -18,6 +18,7 @@ import java.util.concurrent.TimeUnit
  * @param storageRepository a repository used for storing friction data
  * @param articleReadThreshold number of articles to read before threshold is hit
  * @param minDaysThreshold the time between article thresholds can be hit
+ * @param comparisonDate the date for any comparisons to be made. Default value will be the current date
  */
 class FrictionScreenRecorder(
         private val storageRepository: FrictionDataRepository,
