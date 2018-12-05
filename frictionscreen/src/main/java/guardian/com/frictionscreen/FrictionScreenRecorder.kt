@@ -91,33 +91,6 @@ class FrictionScreenRecorder(
         val diff = date1.time - date2.time
         return Math.floor((diff / TimeUnit.HOURS.toMillis(24)).toDouble()).toInt()
     }
-
-    class Builder {
-        private var minDaysThreshold: Int = 7
-        private var minArticleReadThreshold: Int = 3
-        private var storage: FrictionDataRepository? = null
-
-        fun setStorage(storage: FrictionDataRepository): Builder {
-            this.storage = storage
-            return this
-        }
-
-        fun setMinDaysThreshold(minDaysThreshold: Int): Builder {
-            this.minDaysThreshold = minDaysThreshold
-            return this
-        }
-
-        fun setMinArticleReadThreshold(minArticleReadThreshold: Int): Builder {
-            this.minArticleReadThreshold = minArticleReadThreshold
-            return this
-        }
-
-        fun build(): FrictionScreenRecorder {
-            return FrictionScreenRecorder(this.storage
-                    ?: throw RuntimeException("FrictionScreenStorage has not been initialized"),
-                    this.minArticleReadThreshold, this.minDaysThreshold)
-        }
-    }
 }
 
 
