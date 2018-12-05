@@ -4,9 +4,9 @@ import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.type.TypeFactory
 import guardian.com.frictionscreen.extensions.addDays
+import guardian.com.frictionscreen.extensions.getDatesDiffInDays
 import guardian.com.frictionscreen.storage.FrictionDataRepository
 import java.util.*
-import java.util.concurrent.TimeUnit
 
 /**
  * The idea of the friction-screen recorder is to facilitate showing the friction screen (e.g. premium purchase screen)
@@ -44,7 +44,6 @@ class FrictionScreenRecorder(
         if (articleEntries.containsKey(articleId)) {
             return
         }
-
         articleEntries[articleId] = comparisonDate
         articleEntries = trimEntries(articleEntries)
         storageRepository.writeEntries(flattenData(articleEntries))
@@ -78,7 +77,7 @@ class FrictionScreenRecorder(
         val lastShownDate = storageRepository.getDateOfLastFrictionScreenView()
                 ?: return true // no stored date means user hasn't seen the subs screen at all
 
-        val diff = getDatesDiffInDays(comparisonDate, lastShownDate)
+        val diff = comparisonDate.getDatesDiffInDays(lastShownDate)
         return diff >= minDaysThreshold
     }
 
@@ -86,11 +85,6 @@ class FrictionScreenRecorder(
         storageRepository.setDateOfLastFrictionScreenView()
         articleEntries.clear()
         storageRepository.writeEntries(flattenData(articleEntries))
-    }
-
-    private fun getDatesDiffInDays(date1: Date, date2: Date): Int {
-        val diff = date1.time - date2.time
-        return Math.floor((diff / TimeUnit.HOURS.toMillis(24)).toDouble()).toInt()
     }
 }
 
